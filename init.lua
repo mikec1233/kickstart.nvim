@@ -1,6 +1,5 @@
 --[[
 
-=====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -90,9 +89,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
-
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -102,7 +98,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -189,6 +185,16 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Insert mode
+vim.keymap.set('i', 'jj', '<Esc>', {
+  noremap = true,
+  silent = true,
+})
+
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -269,62 +275,62 @@ require('lazy').setup({
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-  { -- Useful plugin to show you pending keybinds.
-    'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    opts = {
-      -- delay between pressing a key and opening which-key (milliseconds)
-      -- this setting is independent of vim.opt.timeoutlen
-      delay = 0,
-      icons = {
-        -- set icon mappings to true if you have a Nerd Font
-        mappings = vim.g.have_nerd_font,
-        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
-        keys = vim.g.have_nerd_font and {} or {
-          Up = '<Up> ',
-          Down = '<Down> ',
-          Left = '<Left> ',
-          Right = '<Right> ',
-          C = '<C-…> ',
-          M = '<M-…> ',
-          D = '<D-…> ',
-          S = '<S-…> ',
-          CR = '<CR> ',
-          Esc = '<Esc> ',
-          ScrollWheelDown = '<ScrollWheelDown> ',
-          ScrollWheelUp = '<ScrollWheelUp> ',
-          NL = '<NL> ',
-          BS = '<BS> ',
-          Space = '<Space> ',
-          Tab = '<Tab> ',
-          F1 = '<F1>',
-          F2 = '<F2>',
-          F3 = '<F3>',
-          F4 = '<F4>',
-          F5 = '<F5>',
-          F6 = '<F6>',
-          F7 = '<F7>',
-          F8 = '<F8>',
-          F9 = '<F9>',
-          F10 = '<F10>',
-          F11 = '<F11>',
-          F12 = '<F12>',
-        },
-      },
-
-      -- Document existing key chains
-      spec = {
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-      },
-    },
-  },
+  --  { -- Useful plugin to show you pending keybinds.
+  --    'folke/which-key.nvim',
+  --    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+  --    opts = {
+  --      -- delay between pressing a key and opening which-key (milliseconds)
+  --      -- this setting is independent of vim.opt.timeoutlen
+  --      delay = 0,
+  --      icons = {
+  --        -- set icon mappings to true if you have a Nerd Font
+  --        mappings = vim.g.have_nerd_font,
+  --        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+  --        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+  --        keys = vim.g.have_nerd_font and {} or {
+  --          Up = '<Up> ',
+  --          Down = '<Down> ',
+  --          Left = '<Left> ',
+  --          Right = '<Right> ',
+  --          C = '<C-…> ',
+  --          M = '<M-…> ',
+  --          D = '<D-…> ',
+  --          S = '<S-…> ',
+  --          CR = '<CR> ',
+  --          Esc = '<Esc> ',
+  --          ScrollWheelDown = '<ScrollWheelDown> ',
+  --          ScrollWheelUp = '<ScrollWheelUp> ',
+  --          NL = '<NL> ',
+  --          BS = '<BS> ',
+  --          Space = '<Space> ',
+  --          Tab = '<Tab> ',
+  --          F1 = '<F1>',
+  --          F2 = '<F2>',
+  --          F3 = '<F3>',
+  --          F4 = '<F4>',
+  --          F5 = '<F5>',
+  --          F6 = '<F6>',
+  --          F7 = '<F7>',
+  --          F8 = '<F8>',
+  --          F9 = '<F9>',
+  --          F10 = '<F10>',
+  --          F11 = '<F11>',
+  --          F12 = '<F12>',
+  --        },
+  --      },
+  --
+  --      -- Document existing key chains
+  --      spec = {
+  --        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
+  --        { '<leader>d', group = '[D]ocument' },
+  --        { '<leader>r', group = '[R]ename' },
+  --        { '<leader>s', group = '[S]earch' },
+  --        { '<leader>w', group = '[W]orkspace' },
+  --        { '<leader>t', group = '[T]oggle' },
+  --        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+  --      },
+  --    },
+  --  },
 
   -- NOTE: Plugins can specify dependencies.
   --
