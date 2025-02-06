@@ -191,6 +191,40 @@ vim.keymap.set('i', 'jj', '<Esc>', {
   silent = true,
 })
 
+-- Comment Lines
+local non_c_line_comments_by_filetype = {
+  lua = '--',
+  python = '#',
+  sql = '--',
+  go = '//',
+}
+
+local function comment_out(opts)
+  local line_comment = non_c_line_comments_by_filetype[vim.bo.filetype] or '//'
+  local start = math.min(opts.line1, opts.line2)
+  local finish = math.max(opts.line1, opts.line2)
+
+  vim.api.nvim_command(start .. ',' .. finish .. 's:^:' .. line_comment .. ':')
+  vim.api.nvim_command 'noh'
+end
+
+local function uncomment(opts)
+  local line_comment = non_c_line_comments_by_filetype[vim.bo.filetype] or '//'
+  local start = math.min(opts.line1, opts.line2)
+  local finish = math.max(opts.line1, opts.line2)
+
+  pcall(vim.api.nvim_command, start .. ',' .. finish .. 's:^\\(\\s\\{-\\}\\)' .. line_comment .. ':\\1:')
+  vim.api.nvim_command 'noh'
+end
+
+vim.api.nvim_create_user_command('CommentOut', comment_out, { range = true })
+vim.keymap.set('v', '<leader>co', ':CommentOut<CR>')
+vim.keymap.set('n', '<leader>co', ':CommentOut<CR>')
+
+vim.api.nvim_create_user_command('Uncomment', uncomment, { range = true })
+vim.keymap.set('v', '<leader>uc', ':Uncomment<CR>')
+vim.keymap.set('n', '<leader>uc', ':Uncomment<CR>')
+
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
@@ -410,7 +444,7 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -623,8 +657,8 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
+        gopls = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -632,7 +666,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -717,7 +751,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -792,13 +826,13 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          --['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.select_next_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -931,13 +965,25 @@ require('lazy').setup({
 
   -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
   --
+  --
+  --Testing Autopairs
+  --  {
+  --    'windwp/nvim-autopairs',
+  --    event = 'InsertEnter', -- Load the plugin only in Insert mode
+  --    config = function()
+  --      require('nvim-autopairs').setup {
+  --        check_ts = true, -- Enable Treesitter integration
+  --        disable_filetype = { 'TelescopePrompt', 'vim' }, -- Disable in specific filetypes
+  --      }
+  --    end,
+  --  },
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
